@@ -4,8 +4,12 @@ const graphqlHttp = require('express-graphql');
 const app = express();
 const { buildSchema } = require('graphql')
 app.use(bodyParser.json());
+const mongoose = require('mongoose');
 
-const events = []
+
+
+const Event = require('./models/event');
+
 app.use('/graphql', graphqlHttp({
     schema: buildSchema(`
 
@@ -27,7 +31,7 @@ app.use('/graphql', graphqlHttp({
             date: String!
         }
         type RootMutation {
-            createEvent(eventINput: InputEvent): Event
+            createEvent(eventInput: InputEvent): Event
         }
         schema {
             query: RootQuery, 
@@ -39,18 +43,32 @@ app.use('/graphql', graphqlHttp({
             return ['travelling, riding, cooking'];
         },
         createEvent: (args) => {
-            const event = {
+            const event = new Event({
                 _id: Math.random().toString(),
-                title: args.title,
-                description: args.description,
-                price: +args.price,
-                date: new Date().toISOString()
-            };
-            events.push(event);
-            return events;
+                title: args.eventInput.title,
+                description: args.eventInput.description,
+                price: +args.eventInput.price,
+                date: new Date(args.eventInput.date)
+            });
+            return event.save().then(
+                data => {
+                    console.log(data)
+                    return {...data._doc}
+                }
+            ).catch(err => {
+                console.log(err);
+                throw err;
+            });
+            return;
         }
     },
     graphiql: true
-}))
+}));
 
-app.listen(3000);
+mongoose.connect(`mongodb://harish_gql:harish123@ds139534.mlab.com:39534/utilities`, { useNewUrlParser: true })
+    .then(() => {
+        app.listen(30001);
+    }).catch(error => {
+        // console.log(`mongodb://${process.env.MONGO_USER}:${process.env.PWD}@ds139534.mlab.com:39534/utilities`)
+        console.log(error)
+    });
