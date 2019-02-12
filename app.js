@@ -19,6 +19,18 @@ const user = userId => {
             throw err;
         })
 }
+
+const events = eventIds => {
+    return Event.find({ _id: { $in: eventIds } })
+    .then( events => {
+        return events.map(event => {
+            return {...event}
+        })
+    })
+    .catch(err => {
+        throw err;
+    })
+}
 app.use('/graphql', graphqlHttp({
     schema: buildSchema(`
 
