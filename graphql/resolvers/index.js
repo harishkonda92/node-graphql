@@ -10,7 +10,7 @@ const user = async userId => {
         return user;
     }
     catch (error) {
-        throw err;
+        throw error;
     }
 }
 
@@ -21,14 +21,14 @@ const events = async eventIds => {
             return { ...event, date: new Date(event.date).toISOString() }
         })
     } catch (error) {
-        throw err;
+        throw error;
     }
 }
 
 module.exports = {
     events: async () => {
         try {
-            const events = Event.find();
+            const events = await Event.find();
             return events.map(event => {
                 console.log(event._doc)
                 return {
@@ -47,23 +47,24 @@ module.exports = {
 
             console.log(args);
             let createdEvent;
-            const event = new Event({
+            const event =  await Event.create({
                 // _id: Math.random().ceil.toString(),
                 title: args.eventInput.title,
                 description: args.eventInput.description,
                 price: +args.eventInput.price,
                 date: new Date(),
                 creator: '5c61aef959a1103dc8d0bc98'
-            }).save()
+            });
             createdEvent = { ...event._doc, date: new Date(event.date).toISOString() };
-            const user = User.findById('5c61aef959a1103dc8d0bc98');
+            const user = await User.findById('5c61aef959a1103dc8d0bc98');
+            console.log(user, 66)
             if (!user) {
                 throw new Error('User not exists')
             }
             user.createdEvents.push(event).save();
             return { ...createdEvent }
         } catch (error) {
-            throw err;
+            throw error;
         }
     },
 
