@@ -6,6 +6,9 @@ app.use(bodyParser.json());
 const mongoose = require('mongoose');
 const graphQlSchema = require('./graphql/schema')
 const graphQlResolvers = require('./graphql/resolvers');
+const isAuth = require('./middlewares/auth.middleware');
+
+app.use(isAuth);
 app.use('/graphql', graphqlHttp({
     schema: graphQlSchema,
     rootValue: graphQlResolvers,
