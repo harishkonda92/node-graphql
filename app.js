@@ -15,9 +15,10 @@ app.use('/graphql', graphqlHttp({
     graphiql: true
 }));
 
-mongoose.connect(`mongodb://localhost:27017/graphql`, { useNewUrlParser: true })
+mongoose.connect(`mongodb://harish_gql:harish123@ds139534.mlab.com:39534/utilities`, { useNewUrlParser: true })
+// mongoose.connect(`mongodb://localhost:27017/graphql`, { useNewUrlParser: true })
     .then(() => {
-        app.listen(3000, () => {
+        app.listen(3001, () => {
             console.log('im listening on 3000')
         });
     }).catch(error => {

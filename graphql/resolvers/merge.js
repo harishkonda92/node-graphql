@@ -6,7 +6,9 @@ const user = async userId => {
     try {
         let user = await User.findById(userId);
         // console.log(user, 10)
-        return { ...user._doc, createdEvents: await events(user.createdEvents) }
+        return { ...user._doc, 
+            // createdEvents: await events(user.createdEvents)
+         }
 
     }
     catch (error) {
@@ -62,8 +64,8 @@ const transformBooking = booking => {
     }
 }
 
-// exports.user = user;
+exports.user = user;
 exports.singleEvent = singleEvent;
-// exports.events = events;
+exports.events = events;
 exports.transformEvent = transformEvent;
 exports.transformBooking = transformBooking;
