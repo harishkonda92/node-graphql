@@ -26,12 +26,21 @@
 .main-navigation__item li{
     margin: 1.5rem;
 }
-.main-navigation__item a {
+.main-navigation__item a,
+.main-navigation__item button {
     text-decoration: none;
     color: black;
+    border: none;
+    font: inherit;
+    background: transparent;
+    cursor: pointer;
 }
 .main-navigation__item  a:hover,
-.main-navigation__item  a:active,
-.main-navigation__item  a.active{
-    color: rgb(226, 226, 89)
+.main-navigation__item  a:active
+.main-navigation__item  button:active,
+.main-navigation__item  button.hover,
+.main-navigation__item  button.active{
+    color: rgb(226, 226, 89);
+    border-radius: 5px;
+    background-color: #ffffff;
 }
