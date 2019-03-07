@@ -1,8 +1,35 @@
 .modal{
-    width: 50rem;
-    max-width: 90%;
+    /* width: 90rem; */
+    width: 90%;
     background: white;
     box-shadow: 0 2px 8px grey;
-    
+    position: fixed0;
+    top: 20vh;
+    left: 5%; 
+}
 
+@media(min-width: 76px){
+    .modal{
+        width: 30rem;
+        left: calc(100% -50rem);
+    }
+}
+
+.modal__header{
+    padding: 1rem;
+    background: purple;
+    color: white
+}
+.modal__header h1{
+    margin: 0%;
+    font-size: 1.25rem;
+}
+.modal__actions{
+    padding: 1rem;
+}
+
+.modal__actions{
+    display: flex;
+    justify-content: flex-end;
+    
 }

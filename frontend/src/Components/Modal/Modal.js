@@ -1,14 +1,14 @@
 import React from 'react';
-import '.Modal.css'
+import './Modal.css'
 const modal = (props) => {
     return <div className="modal">
-        <header>{props.title}</header>
+        <header className="modal__header">{props.title}</header>
         <section className="modal__content">
             {props.children}
         </section>
         <section className="modal__actions">
-            {props.canCcancel && <button>Cancel</button>}
-            {props.canConfirm && <button>Confirm</button>}
+            {props.canCancel && <button onClick={props.onCancel}>Cancel</button>}
+            {props.canConfirm && <button onClick={props.onConfirm}>Confirm</button>}
         </section>
 
     </div>
