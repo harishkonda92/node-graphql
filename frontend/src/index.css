@@ -6,6 +6,7 @@ body {
 }
 
 .form-control  label,
+.form-control  textarea,
 .form-control  input{
     width: 100%;
     display: block;
