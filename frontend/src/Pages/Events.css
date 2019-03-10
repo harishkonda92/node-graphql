@@ -6,19 +6,6 @@
     max-width: 80%;
 }
 
-.events__list{
-    margin-top: 2rem;
-    max-width: 90%;
-    margin: 2rem auto;
-    list-style: none;
-    padding: 0; 
-}
-
-.events__list-item{
-    margin: 1rem;
-    padding: 1rem;
-    border: 1px solid purple;
-}
 .modal_form{
     padding: 3%
 }
