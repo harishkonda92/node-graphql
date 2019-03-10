@@ -127,7 +127,7 @@ class EventsPage extends Component {
             <React.Fragment>
                 {this.state.creating &&
                     <Modal title="Add event" canCancel canConfirm onCancel={this.modalCancelHandler} onConfirm={this.modalConfirmHandler}>
-                        <form>
+                        <form className="modal_form">
                             <div className="form-control">
                                 <label htmlFor="title">title</label>
                                 <input type="text" id="text" ref={this.titleRef}></input>
@@ -143,7 +143,7 @@ class EventsPage extends Component {
                         </form>
 
                     </Modal>}
-                {/* <BackDrop /> */}
+                {this.state.creating&& <BackDrop />}
                 {this.context.token && <div className="events-control">
                     <button className="btn" onClick={this.startCreateEventHandler}>Create Event</button>
                 </div>}
