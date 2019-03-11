@@ -1,5 +1,6 @@
 const Booking = require('../../models/bookings');
-const { transformBooking, transformEvent } = require('./merge');
+const { transformBooking, transformEvent, user, singleEvent } = require('./merge');
+const Event = require('../../models/event');
 
 module.exports = {
 
@@ -8,7 +9,7 @@ module.exports = {
             throw new Error('Unathorised');
         }
         try {
-            const bookings = await Booking.find();
+            const bookings = await Booking.find({ user: req.userId });
             return bookings.map(booking => {
                 // console.log(booking._doc.user)
                 return transformBooking(booking);
@@ -16,6 +17,29 @@ module.exports = {
             })
         } catch (error) {
             throw error;
+        }
+    },
+    bookEvent: async (args, req) => {
+        try {
+            if (!req.isAuth) {
+                throw new Error('Unathorised');
+            }
+            const fetchedEvent = await Event.findOne({ _id: args.eventId });
+            const bookEvent = new Booking({
+                user: req.userId,
+                event: fetchedEvent
+            });
+            // console.log(fetchedEvent);s
+            const result = await bookEvent.save();
+            return {
+                ...result._doc,
+                user: user(bookEvent._doc.user),
+                event: singleEvent(bookEvent._doc.event),
+                createdAt: new Date(result.createdAt).toISOString(),
+                updatedAt: new Date(result.updatedAt).toISOString()
+            }
+        } catch (error) {
+            throw error
         }
     },
 
