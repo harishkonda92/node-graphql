@@ -33,7 +33,7 @@ module.exports = {
             const result = await bookEvent.save();
             return {
                 ...result._doc,
-                user: user(bookEvent._doc.user),
+                user: user.bind(this, bookEvent._doc.user),
                 event: singleEvent(bookEvent._doc.event),
                 createdAt: new Date(result.createdAt).toISOString(),
                 updatedAt: new Date(result.updatedAt).toISOString()

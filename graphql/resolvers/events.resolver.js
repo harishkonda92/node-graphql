@@ -8,7 +8,7 @@ module.exports = {
         try {
             const events = await Event.find();
             return events.map(async event => {
-                console.log(await transformEvent(event))
+                // console.log(await transformEvent(event))
                 return await transformEvent(event);
             });
         } catch (error) {
@@ -29,7 +29,7 @@ module.exports = {
                 date: new Date(),
                 creator: req.userId
             });
-            let creator = await user(event.creator);
+            let creator = await user.bind(this, event.creator);
             createdEvent = await transformEvent(event);
             // console.log(await user(event.creator)   )
             const newuser = await User.findById(req.userId);
@@ -38,7 +38,7 @@ module.exports = {
             }
             newuser.createdEvents.push(event);
             await newuser.save();
-            console.log(createdEvent, 70)
+            // console.log(createdEvent, 70)
             return { ...createdEvent }
         } catch (error) {
             console.log(error)
