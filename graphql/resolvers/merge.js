@@ -11,14 +11,14 @@ const userLoader = new dataLoader(userIds => {
 })
 const user = async userId => {
     try {
-        console.log(userId)
+        // console.log(userId)
         // let user = await User.findById(userId);
         let user = await userLoader.load(userId.toString());
         // console.log(user, 10)
         return {
             ...user._doc,
             // createdEvents: await events(user.createdEvents)
-            createdEvents: eventLoader.loadMany.bind(this, (user._doc.createdEvents))
+            createdEvents: () => eventLoader.loadMany(user._doc.createdEvents)
         }
 
     }
