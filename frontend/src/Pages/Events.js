@@ -12,6 +12,7 @@ class EventsPage extends Component {
         isLoading: false,
         selectedEvent: null
     };
+    isActive = true;
     static contextType = AuthContext;
     constructor(props) {
         super(props);
@@ -38,8 +39,8 @@ class EventsPage extends Component {
         console.log(event);
         const requestBody = {
             query: `
-            mutation{ 
-                createEvent (eventInput: {title: "${title}", price: ${price}, description: "${description}"}){
+            mutation createEvent($title: String!, $price: Float!, $description: String!){ 
+                createEvent (eventInput: {title: $title, price: $price, description: $description}){
                     _id,
                     title,
                     description,
@@ -47,7 +48,12 @@ class EventsPage extends Component {
                     price
                 }
             }
-            `
+            `,
+            variables: {
+                title: title,
+                price: price,
+                description: description
+            }
         }
         const token = this.context.token;
         fetch('http://localhost:3001/graphql', {
@@ -126,13 +132,17 @@ class EventsPage extends Component {
                 return res.json();
             })
             .then(resData => {
-                const events = resData.data.events;
-                this.setState({ events: events, isLoading: false })
+                if (this.isActive) {
+                    const events = resData.data.events;
+                    this.setState({ events: events, isLoading: false });
+                }
                 console.log(resData)
             })
             .catch(error => {
-                this.setState({ isLoading: false })
-                console.log(error)
+                if (this.isActive) {
+                    this.setState({ isLoading: false })
+                    console.log(error)
+                }
             });
 
     }
@@ -143,14 +153,53 @@ class EventsPage extends Component {
             return { selectedEvent: selectedEvent }
         })
     }
-    bookEventHandler = eventId => {
-
+    bookEventHandler = () => {
+        if (!this.context.token) {
+            this.setState({ selectedEvent: null });
+            return;
+        }
+        const requestBody = {
+            query: `
+            mutation bookEvent($bookingId: ID!){ 
+                bookEvent (eventId: $bookingId){
+                    _id,
+                    createdAt,
+                    updatedAt
+                }
+            }
+            `,
+            variables: {
+                bookingId: this.state.selectedEvent._id
+            }
+        }
+        const token = this.context.token;
+        fetch('http://localhost:3001/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Request failed');
+                }
+                return res.json();
+            })
+            .then(resData => {
+                this.setState({ selectedEvent: null });
+                console.log(resData)
+                // this.fetchEvents();
+            })
+            .catch(error => {
+                console.log(error)
+            });
     }
-
+    componentWillUnmount() {
+        this.isActive = false;
+    }
     render() {
-        // const eventList = this.state.events.map(event => {
-        //     return <li key={event._id} className="events__list-item">{event.title}</li>
-        // })
         return (
             <React.Fragment>
                 {this.state.creating &&
@@ -175,7 +224,7 @@ class EventsPage extends Component {
                         </form>
 
                     </Modal>}
-                {this.state.creating || this.state.selectedEvent && <BackDrop />}
+                {(this.state.creating || this.state.selectedEvent) && <BackDrop />}
                 {this.context.token && <div className="events-control">
                     <button className="btn" onClick={this.startCreateEventHandler}>Create Event</button>
                 </div>}
@@ -183,7 +232,7 @@ class EventsPage extends Component {
                     <Modal title={this.state.selectedEvent.title}
                         canCancel
                         canConfirm
-                        confirmText={'Book event'}
+                        confirmText={this.context.token ? 'Book event' : 'Confirm'}
                         onCancel={this.modalCancelHandler}
                         onConfirm={this.bookEventHandler}>
                         <h1>{this.state.selectedEvent.title}</h1>
