@@ -39,8 +39,8 @@ class EventsPage extends Component {
         console.log(event);
         const requestBody = {
             query: `
-            mutation{ 
-                createEvent (eventInput: {title: "${title}", price: ${price}, description: "${description}"}){
+            mutation createEvent($title: String!, $price: Float!, $description: String!){ 
+                createEvent (eventInput: {title: $title, price: $price, description: $description}){
                     _id,
                     title,
                     description,
@@ -48,7 +48,12 @@ class EventsPage extends Component {
                     price
                 }
             }
-            `
+            `,
+            variables: {
+                title: title,
+                price: price,
+                description: description
+            }
         }
         const token = this.context.token;
         fetch('http://localhost:3001/graphql', {
@@ -155,14 +160,17 @@ class EventsPage extends Component {
         }
         const requestBody = {
             query: `
-            mutation{ 
-                bookEvent (eventId: "${this.state.selectedEvent._id}"){
+            mutation bookEvent($bookingId: ID!){ 
+                bookEvent (eventId: $bookingId){
                     _id,
                     createdAt,
                     updatedAt
                 }
             }
-            `
+            `,
+            variables: {
+                bookingId: this.state.selectedEvent._id
+            }
         }
         const token = this.context.token;
         fetch('http://localhost:3001/graphql', {
@@ -216,7 +224,7 @@ class EventsPage extends Component {
                         </form>
 
                     </Modal>}
-                {this.state.creating || this.state.selectedEvent && <BackDrop />}
+                {(this.state.creating || this.state.selectedEvent) && <BackDrop />}
                 {this.context.token && <div className="events-control">
                     <button className="btn" onClick={this.startCreateEventHandler}>Create Event</button>
                 </div>}

@@ -56,7 +56,7 @@ class BookingsPage extends Component {
     onCancelBookingHandler = bookingId => {
         const requestBody = {
             query: `
-            mutation cavncelBooking($id: ID!) { 
+            mutation cancelBooking($id: ID!) { 
                 cancelBooking(bookingId: $id){
                     _id,
                     title
