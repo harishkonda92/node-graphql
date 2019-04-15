@@ -17,7 +17,10 @@ app.use((req, res, next) => {
     }
     next()
 })
+app.set('view engine', 'ejs');
 app.use(isAuth);
+app.use('/', express.static('views'))
+
 app.use('/graphql', graphqlHttp({
     schema: graphQlSchema,
     rootValue: graphQlResolvers,
